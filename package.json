@@ -1,0 +1,16 @@
+{
+  "name": "ts-vault-library",
+  "version": "1.0.0",
+  "description": "TypeScript library for accessing the vault file from different applications.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
