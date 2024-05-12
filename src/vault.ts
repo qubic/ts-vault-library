@@ -1,5 +1,9 @@
 import { IConfig, IEncryptedVaultFile, IVaultFile } from '../model/config';
 
+/**
+ * Represents a vault for storing and managing encrypted configuration data.
+ * The QubicVault class provides methods for importing, unlocking, and managing the vault file, as well as handling encryption and decryption of the vault contents.
+ */
 export class QubicVault {
 
     private runningConfiguration!: IConfig;
@@ -26,6 +30,15 @@ export class QubicVault {
     };
 
 
+    /**
+     * Imports and unlocks either a vault file or a configuration file.
+     * @param selectedFileIsVaultFile - Indicates whether the selected file is a vault file or a configuration file.
+     * @param password - The password used for decryption or unlocking.
+     * @param selectedConfigFile - The configuration file to be imported (if not a vault file).
+     * @param file - The vault file to be imported (if it is a vault file).
+     * @param unlock - Determines whether to unlock the configuration file (if it is a configuration file).
+     * @returns A Promise that resolves to a boolean indicating whether the import and unlock process was successful or not.
+     */
     public async importAndUnlock(
         selectedFileIsVaultFile: boolean,
         password: string,
@@ -70,7 +83,12 @@ export class QubicVault {
     }
 
 
-
+    /**
+     * Imports and unlocks a vault file.
+     * @param binaryVaultFile - The encrypted vault file as an ArrayBuffer.
+     * @param password - The password used for decryption.
+     * @returns A Promise that resolves to a boolean indicating whether the import was successful or not.
+     */
     private async importVault(
         binaryVaultFile: ArrayBuffer /* encrypted vault file */,
         password: string
@@ -92,6 +110,11 @@ export class QubicVault {
     }
 
 
+    /**
+     * Checks if the provided binary file is a valid vault file.
+     * @param binaryFile - The binary file to be checked.
+     * @returns A boolean indicating whether the file is a valid vault file or not.
+     */
     private isVaultFile(binaryFile: ArrayBuffer): boolean {
         try {
             const enc = new TextDecoder('utf-8');
@@ -109,6 +132,12 @@ export class QubicVault {
     }
 
 
+    /**
+     * Unlocks a vault file using the provided password.
+     * @param binaryVaultFile - The encrypted vault file as an ArrayBuffer.
+     * @param password - The password used for decryption.
+     * @returns A Promise that resolves to a boolean indicating whether the unlock process was successful or not.
+     */
     private async unlockVault(
         binaryVaultFile: ArrayBuffer /* encrypted vault file */,
         password: string
@@ -136,11 +165,20 @@ export class QubicVault {
     }
 
 
+    /**
+     * Saves the current configuration, optionally locking it.
+     * @param lock - Determines whether to lock the configuration or not.
+     * @returns A Promise that resolves when the save operation is complete.
+     */
     private async save(lock: boolean = false): Promise<void> {
         await this.saveConfig(lock);
     }
 
 
+    /**
+     * Saves the current configuration to the local storage, optionally locking it.
+     * @param lock - Determines whether to lock the configuration or not.
+     */
     private async saveConfig(lock: boolean) {
         if (lock) {
             // when locking we don't want that the public key is saved.
@@ -164,6 +202,11 @@ export class QubicVault {
     }
 
 
+    /**
+     * Sets the public and private keys for the current configuration.
+     * @param publicKey - The public key to be set.
+     * @param privateKey - The private key to be set (can be null).
+     */
     private async setKeys(
         publicKey: CryptoKey,
         privateKey: CryptoKey | null = null
@@ -178,11 +221,11 @@ export class QubicVault {
 
 
     /**
-    * converts the binary vault file to the internal vault file format (uploaded by the user)
-    * @param binaryVaultFile
-    * @param password
-    * @returns
-    */
+     * Converts the binary vault file to the internal vault file format (uploaded by the user).
+     * @param binaryVaultFile - The encrypted vault file as an ArrayBuffer.
+     * @param password - The password used for decryption.
+     * @returns A Promise that resolves to an IVaultFile object representing the decrypted vault file.
+     */
     private async convertBinaryVault(
         binaryVaultFile: ArrayBuffer /* encrypted vault file */,
         password: string
@@ -204,6 +247,12 @@ export class QubicVault {
     }
 
 
+    /**
+     * Decrypts the encrypted vault file data using the provided password.
+     * @param encryptedData - The encrypted vault file data.
+     * @param password - The password used for decryption.
+     * @returns A Promise that resolves to an IVaultFile object representing the decrypted vault file.
+     */
     private async decryptVault(
         encryptedData: IEncryptedVaultFile,
         password: string
@@ -224,6 +273,11 @@ export class QubicVault {
     }
 
 
+    /**
+     * Imports a configuration object.
+     * @param config - The configuration object to be imported.
+     * @returns A Promise that resolves to a boolean indicating whether the import was successful or not.
+     */
     private async importConfig(config: IConfig): Promise<boolean> {
         if (!config || config.seeds.length <= 0) return false;
 
@@ -233,6 +287,10 @@ export class QubicVault {
     }
 
 
+    /**
+     * Loads a configuration object and sets up the necessary keys.
+     * @param config - The configuration object to be loaded.
+     */
     private async loadConfig(config: IConfig) {
         this.runningConfiguration = config;
 
@@ -251,6 +309,11 @@ export class QubicVault {
     }
 
 
+    /**
+     * Derives a key from the provided password and salt for decrypting the vault file.
+     * @param password - The password used for key derivation.
+     * @param salt - The salt value used for key derivation.
+     */
     private async getVaultFileKey(password: string, salt: any) {
         const passwordBytes = this.stringToBytes(password);
         const initialKey = await crypto.subtle.importKey(
@@ -271,6 +334,12 @@ export class QubicVault {
     }
 
 
+    /**
+     * Imports an encrypted private key using the provided password.
+     * @param wrappedKey - The wrapped (encrypted) private key.
+     * @param password - The password used for decryption.
+     * @returns A Promise that resolves to an object containing the private key (CryptoKey) and the corresponding public key (CryptoKey).
+     */
     private async importEncryptedPrivateKey(
         wrappedKey: ArrayBuffer,
         password: string
@@ -297,6 +366,11 @@ export class QubicVault {
     }
 
 
+    /**
+     * Imports a key from the provided password.
+     * @param password - The password used for key import.
+     * @returns A Promise that resolves to the imported key (CryptoKey).
+     */
     private async importKey(password: string) {
         const enc = new TextEncoder();
         const pw = enc.encode(password);
@@ -311,6 +385,11 @@ export class QubicVault {
     }
 
 
+    /**
+     * Derives a key from the provided password key.
+     * @param pwKey - The password key used for key derivation.
+     * @returns A Promise that resolves to the derived key (CryptoKey).
+     */
     private async deriveKey(pwKey: CryptoKey) {
         const salt = new Uint8Array(16).fill(0);
 
@@ -329,26 +408,51 @@ export class QubicVault {
     }
 
 
+    /**
+     * Converts a Uint8Array of bytes to a string.
+     * @param bytes - The bytes to be converted.
+     * @returns A string representation of the bytes.
+     */
     private bytesToString(bytes: Uint8Array): string {
         return new TextDecoder().decode(bytes);
     }
 
 
+    /**
+     * Converts a string to a Uint8Array of bytes.
+     * @param str - The string to be converted.
+     * @returns A Uint8Array of bytes representing the string.
+     */
     private stringToBytes(str: string): Uint8Array {
         return new TextEncoder().encode(str);
     }
 
 
+    /**
+     * Converts a Uint8Array of bytes to a Base64 string.
+     * @param arr - The bytes to be converted.
+     * @returns A Base64 string representation of the bytes.
+     */
     privatebytesToBase64(arr: Uint8Array): string {
         return btoa(Array.from(arr, (b) => String.fromCharCode(b)).join(''));
     }
 
 
+    /**
+     * Converts a Base64 string to a Uint8Array of bytes.
+     * @param base64 - The Base64 string to be converted.
+     * @returns A Uint8Array of bytes representing the Base64 string.
+     */
     private base64ToBytes(base64: string): Uint8Array {
         return Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
     }
 
 
+    /**
+     * Derives the public key from the provided private key.
+     * @param privateKey - The private key used to derive the public key.
+     * @returns A Promise that resolves to the derived public key (CryptoKey).
+     */
     async getPublicKey(privateKey: CryptoKey) {
         const jwkPrivate = await crypto.subtle.exportKey('jwk', privateKey);
         delete jwkPrivate.d;
@@ -358,6 +462,12 @@ export class QubicVault {
         ]);
     }
 
+
+    /**
+     * Converts a Base64 string to an ArrayBuffer.
+     * @param base64 - The Base64 string to be converted.
+     * @returns An ArrayBuffer representing the Base64 string.
+     */
     private base64ToArrayBuffer(base64: string) {
         const binary_string = atob(base64);
         const len = binary_string.length;
