@@ -7,7 +7,7 @@ import { IConfig, IEncryptedVaultFile, IVaultFile } from '../model/config';
 export class QubicVault {
 
     private runningConfiguration!: IConfig;
-    private configName = '';
+    private configName = 'wallet-config';
     public privateKey: CryptoKey | null = null;
     public publicKey: CryptoKey | null = null;
     public isWalletReady = false;
@@ -211,12 +211,17 @@ export class QubicVault {
         publicKey: CryptoKey,
         privateKey: CryptoKey | null = null
     ) {
-        this.publicKey = publicKey;
-        // also push the current publickey to the running configuration
-        const jwk = await crypto.subtle.exportKey('jwk', this.publicKey!);
-        this.runningConfiguration.publicKey = jwk;
-
-        if (privateKey) this.privateKey = privateKey;
+        try {
+            this.publicKey = publicKey;
+            // also push the current publickey to the running configuration
+            const jwk = await crypto.subtle.exportKey('jwk', this.publicKey!);
+            this.runningConfiguration.publicKey = jwk;
+    
+            if (privateKey) this.privateKey = privateKey;
+        }
+        catch (e) {
+            // ignore
+        }
     }
 
 
