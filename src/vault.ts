@@ -7,7 +7,7 @@ import { IConfig, IEncryptedVaultFile, IVaultFile } from '../model/config';
 export class QubicVault {
 
     private runningConfiguration!: IConfig;
-    private configName = 'wallet-config';
+    private configName = '';
     public privateKey: CryptoKey | null = null;
     public publicKey: CryptoKey | null = null;
     public isWalletReady = false;
