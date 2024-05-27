@@ -1,4 +1,4 @@
-import { IConfig, IEncryptedVaultFile, IVaultFile } from '../model/config';
+import { IConfig, IEncryptedVaultFile, IVaultFile } from './model/config';
 
 /**
  * Represents a vault for storing and managing encrypted configuration data.
