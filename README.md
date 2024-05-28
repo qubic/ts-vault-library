@@ -7,7 +7,7 @@ TypeScript library for accessing the vault file from different applications.
 Install via NPM.
 
 ```bash
-npm i qubic-ts-vault-library
+npm i @qubic-lib/qubic-ts-vault-library
 ```
 
 ## Testing
