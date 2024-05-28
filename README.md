@@ -1,4 +1,4 @@
-# Vault Typescript Library
+# Qubic Vault Typescript Library
 
 ## Description
 TypeScript library for accessing the vault file from different applications.
