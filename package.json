@@ -1,8 +1,8 @@
 {
   "name": "@qubic-lib/qubic-ts-vault-library",
-  "version": "1.0.1", 
+  "version": "1.0.2", 
   "description": "TypeScript library for accessing the vault file from different applications. https://qubic.org",
-  "main": "dist/index.js",
+  "main": "dist/vault.js",
   "scripts": {
     "build": "tsc",
     "test": "jest"

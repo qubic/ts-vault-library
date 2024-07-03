@@ -1,4 +1,5 @@
 import { IConfig, IEncryptedVaultFile, IVaultFile } from './model/config';
+import { ISeed } from './model/seed';
 
 /**
  * Represents a vault for storing and managing encrypted configuration data.
@@ -6,7 +7,10 @@ import { IConfig, IEncryptedVaultFile, IVaultFile } from './model/config';
  */
 export class QubicVault {
 
-    private runningConfiguration!: IConfig;
+    public runningConfiguration: IConfig = {
+        seeds: [],
+        publicKey: undefined,    
+    };
     private configName = 'wallet-config';
     public privateKey: CryptoKey | null = null;
     public publicKey: CryptoKey | null = null;
@@ -82,6 +86,34 @@ export class QubicVault {
         }
     }
 
+    private async decrypt(
+        privateKey: CryptoKey,
+        message: ArrayBuffer
+    ): Promise<ArrayBuffer> {
+        const msg = await crypto.subtle.decrypt(this.encAlg, privateKey, message);
+        return msg;
+    }
+
+    public getSeeds() {
+        return this.runningConfiguration.seeds;
+    }
+
+    public getSeed(publicId: string): ISeed | undefined {
+        return this.runningConfiguration.seeds.find((f) => f.publicId === publicId);
+    }
+
+    public async revealSeed(publicId: string): Promise<string> {
+        const seed = this.getSeed(publicId);
+        try {
+          const decryptedSeed = await this.decrypt(
+            this.privateKey!,
+            this.base64ToArrayBuffer(seed?.encryptedSeed!)
+          );
+          return new TextDecoder().decode(decryptedSeed);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+    }
 
     /**
      * Imports and unlocks a vault file.
