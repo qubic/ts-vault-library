@@ -1,7 +1,8 @@
 # Qubic Vault Typescript Library
 
 ## Description
-TypeScript library for accessing the vault file from different applications.
+TypeScript library for accessing the vault file from different applications. 
+https://www.npmjs.com/package/@qubic-lib/qubic-ts-vault-library
 
 ## Usage
 Install via NPM.
