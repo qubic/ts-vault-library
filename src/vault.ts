@@ -9,7 +9,7 @@ export class QubicVault {
 
     public runningConfiguration: IConfig = {
         seeds: [],
-        publicKey: undefined,    
+        publicKey: undefined,
     };
     private configName = 'wallet-config';
     public privateKey: CryptoKey | null = null;
@@ -105,13 +105,13 @@ export class QubicVault {
     public async revealSeed(publicId: string): Promise<string> {
         const seed = this.getSeed(publicId);
         try {
-          const decryptedSeed = await this.decrypt(
-            this.privateKey!,
-            this.base64ToArrayBuffer(seed?.encryptedSeed!)
-          );
-          return new TextDecoder().decode(decryptedSeed);
+            const decryptedSeed = await this.decrypt(
+                this.privateKey!,
+                this.base64ToArrayBuffer(seed?.encryptedSeed!)
+            );
+            return new TextDecoder().decode(decryptedSeed);
         } catch (e) {
-          return Promise.reject(e);
+            return Promise.reject(e);
         }
     }
 
@@ -248,7 +248,7 @@ export class QubicVault {
             // also push the current publickey to the running configuration
             const jwk = await crypto.subtle.exportKey('jwk', this.publicKey!);
             this.runningConfiguration.publicKey = jwk;
-    
+
             if (privateKey) this.privateKey = privateKey;
         }
         catch (e) {
@@ -470,7 +470,7 @@ export class QubicVault {
      * @param arr - The bytes to be converted.
      * @returns A Base64 string representation of the bytes.
      */
-    privatebytesToBase64(arr: Uint8Array): string {
+    private bytesToBase64(arr: Uint8Array): string {
         return btoa(Array.from(arr, (b) => String.fromCharCode(b)).join(''));
     }
 
@@ -515,4 +515,3 @@ export class QubicVault {
         return bytes.buffer;
     }
 }
-
